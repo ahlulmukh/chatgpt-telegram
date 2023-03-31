@@ -12,7 +12,7 @@
 
 ###
 
-## Cara Instal
+## How To Install
 
 - openai token [`Click Here`](https://openai.com/blog/openai-api)
 - token bot using bot father in telegram
