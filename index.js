@@ -14,9 +14,7 @@ bot.command("start", (ctx) =>
   )
 );
 bot.command("help", (ctx) =>
-  ctx.reply(
-    "Untuk memberikan pertanyaan kepada abot, ketikan pada pesan dan abot akan menjawabnya"
-  )
+  ctx.reply("Untuk cara menanyakan ke abot dengan cara mengetikan langsung")
 );
 
 await bot.api.setMyCommands([
