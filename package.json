@@ -1,0 +1,16 @@
+{
+  "name": "chatgpt-tele",
+  "version": "1.0.0",
+  "description": "chatgpt using bot telegram",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chatgpt": "^5.1.3",
+    "grammy": "^1.15.3"
+  }
+}
