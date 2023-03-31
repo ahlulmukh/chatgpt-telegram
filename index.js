@@ -2,17 +2,27 @@ import { Bot } from "grammy";
 import config from "./config.js";
 import { Configuration, OpenAIApi } from "openai";
 import { chunkSubstr } from "./utils.js";
-
 const configuration = new Configuration({
   apiKey: config.openaitoken,
 });
-
 const openai = new OpenAIApi(configuration);
+const bot = new Bot(config.token_bot);
 
-// Create a bot object
-const bot = new Bot(config.token_bot); // <-- place your bot token in this string
+bot.command("start", (ctx) =>
+  ctx.reply(
+    "Hai, saya adalah abot versi telegram, tanyakan apa saja kepada saya, saya akan menjawabnya :D. Model using chatGPT 3.5 Turbo"
+  )
+);
+bot.command("help", (ctx) =>
+  ctx.reply(
+    "Untuk memberikan pertanyaan kepada abot, ketikan pada pesan dan abot akan menjawabnya"
+  )
+);
 
-// Register listeners to handle messages
+await bot.api.setMyCommands([
+  { command: "start", description: "Untuk Memulai Bot" },
+  { command: "help", description: "Memberikan bantuan" },
+]);
 
 bot.on("message", async (ctx) => {
   const userMessage = {
@@ -42,5 +52,5 @@ bot.on("message", async (ctx) => {
   }
 });
 
-// Start the bot (using long polling)
 bot.start();
+console.log("Bot Started !");
