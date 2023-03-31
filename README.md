@@ -20,7 +20,7 @@
 ```sh
 $ git clone https://github.com/ahlulmukh/chatgpt-telegram.git
 $ change file example.config.js to config.js
-$ change token bot and open ai token
+$ change token bot and open ai token in config.js
 $ npm i
 $ npm start
 
