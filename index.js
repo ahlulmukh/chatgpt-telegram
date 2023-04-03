@@ -31,7 +31,6 @@ async function MulaiChat({ text, chatId, messageId }, retryCount = 0) {
   const [parentId = null, tempId = null] = (messageIds.get(chatId) ?? "").split(
     ","
   );
-  console.log(parentId);
 
   let response, tempMessage;
   try {
