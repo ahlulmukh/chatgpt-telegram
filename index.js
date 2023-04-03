@@ -1,23 +1,84 @@
-import { Bot, MemorySessionStorage, session } from "grammy";
-import { chatMembers } from "@grammyjs/chat-members";
-import { conversations, createConversation } from "@grammyjs/conversations";
-import config from "./config.js";
-const bot = new Bot(config.token_bot);
+import TelegramBot from "node-telegram-bot-api";
 import { ChatGPTAPI } from "chatgpt";
+import config from "./config.js";
+
+const bot = new TelegramBot(config.token_bot, { polling: true });
 const api = new ChatGPTAPI({ apiKey: config.openaitoken });
-const adapter = new MemorySessionStorage();
-const WAITING_MSG = "I am organizing my thoughts, please wait a moment.";
+const retry = 3;
+const timeout = 10 * 60 * 1000;
+const hapusPesan = "Data berhasil dihapus";
+const WaitMSG = "Bentar, bot sedang mengetikannya";
+const ErrMSG = "Mohon Maaf Lagi Error ";
 const messageIds = new Map();
 
-bot.on("message", async (ctx) => {
-  const chatId = ctx.msg.chat.id;
-  const messageId = ctx.msg.message_id;
-  console.log(
-    `${new Date().toLocaleString()} -- Nomor Pesan ${messageId} Dari id: ${chatId}: dengan text ${
-      ctx.message.text
-    }`
-  );
-  await ctx.conversation.enter("greeting");
-});
+bot.on(
+  "text",
+  async ({ text, chat: { id: chatId }, message_id: messageId }) => {
+    console.log(
+      `${new Date().toLocaleString()} Menerima pesan dari : ${chatId}: ${text}`
+    );
+    await MulaiChat({ text, chatId, messageId });
+  }
+);
 
-bot.start();
+async function MulaiChat({ text, chatId, messageId }, retryCount = 0) {
+  if (text === "/reset") {
+    messageIds.delete(chatId);
+    await bot.sendMessage(chatId, CLEARED_MSG);
+    return;
+  }
+
+  const [parentId = null, tempId = null] = (messageIds.get(chatId) ?? "").split(
+    ","
+  );
+  console.log(parentId);
+
+  let response, tempMessage;
+  try {
+    tempMessage = await bot.sendMessage(chatId, WaitMSG, {
+      reply_to_message_id: messageId,
+    });
+    response = parentId
+      ? await api.sendMessage(text.replace(), {
+          parentMessageId: parentId,
+        })
+      : await api.sendMessage(text.replace());
+    console.log(
+      `${new Date().toLocaleString()} Respone Bot <${text}>: ${response.text}`
+    );
+    await bot.editMessageText(response.text, {
+      parse_mode: "Markdown",
+      chat_id: chatId,
+      message_id: tempMessage.message_id,
+    });
+  } catch (err) {
+    console.error(
+      `${new Date().toLocaleString()} Error Respone Bot <${text}>: ${
+        err.message
+      }`
+    );
+    if (retryCount < retry) {
+      console.log(
+        `${new Date().toLocaleString()} -- Sedang Mencoba ulang <${text}>`
+      );
+      handleMessage({ text, chatId, messageId }, retryCount + 1);
+      return;
+    } else {
+      console.error(
+        `${new Date().toLocaleString()} -- Gagal mendapatkan data ai ${RETRY_COUNT} percobaan.`
+      );
+      await bot.sendMessage(chatId, ErrMSG, {
+        reply_to_message_id: messageId,
+      });
+      return;
+    }
+  }
+
+  const newMsgId = `${response.id},${tempMessage.message_id}`;
+  messageIds.set(chatId, newMsgId);
+
+  setTimeout(() => {
+    messageIds.delete(chatId);
+  }, timeout);
+}
+console.log(`${new Date().toLocaleString()} Bot Berhasil Dijalankan`);
