@@ -6,12 +6,6 @@
 
 <h2 align="center">Abot-MD</h2>
 
-###
-
-<p align="left">This is Script of Bot Telegram, working with GrammyJS</p>
-
-###
-
 ## How To Install
 
 - openai token [`Click Here`](https://openai.com/blog/openai-api)
