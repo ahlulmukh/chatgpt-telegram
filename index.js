@@ -24,13 +24,11 @@ bot.on(
 async function MulaiChat({ text, chatId, messageId }, retryCount = 0) {
   if (text === "/reset") {
     messageIds.delete(chatId);
-    await bot.sendMessage(chatId, CLEARED_MSG);
+    await bot.sendMessage(chatId, hapusPesan);
     return;
   }
 
-  const [parentId = null, tempId = null] = (messageIds.get(chatId) ?? "").split(
-    ","
-  );
+  const [parentId = null] = (messageIds.get(chatId) ?? "").split(",");
 
   let response, tempMessage;
   try {
