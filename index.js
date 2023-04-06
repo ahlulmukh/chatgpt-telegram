@@ -1,3 +1,4 @@
+process.on("uncaughtException", console.error);
 import TelegramBot from "node-telegram-bot-api";
 import { ChatGPTAPI } from "chatgpt";
 import config from "./config.js";
