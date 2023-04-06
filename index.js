@@ -6,6 +6,7 @@ import config from "./config.js";
 const bot = new TelegramBot(config.token_bot, { polling: true });
 const api = new ChatGPTAPI({ apiKey: config.openaitoken });
 const retry = 3;
+//
 const timeout = 10 * 60 * 1000;
 const hapusPesan = "Data berhasil dihapus";
 const WaitMSG = "Bentar, bot sedang mengetikannya";
