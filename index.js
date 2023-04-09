@@ -24,6 +24,14 @@ bot.on(
 );
 
 async function MulaiChat({ text, chatId, messageId }, retryCount = 0) {
+  if (text === "/start") {
+    await bot.sendMessage(
+      chatId,
+      "Hai, untuk menggunakan silahkan ketik sesuka anda"
+    );
+    return;
+  }
+
   if (text === "/reset") {
     messageIds.delete(chatId);
     await bot.sendMessage(chatId, hapusPesan);
